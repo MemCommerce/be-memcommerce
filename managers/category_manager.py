@@ -7,7 +7,9 @@ from models.category_model import CategoryModel
 
 class CategoryManager:
     @staticmethod
-    async def insert_category(category_data: CategoryData, db: AsyncSession) -> Category:
+    async def insert_category(
+        category_data: CategoryData, db: AsyncSession
+    ) -> Category:
         category = CategoryModel(**category_data.model_dump())
         db.add(category)
         await db.commit()

@@ -7,17 +7,17 @@ class ProductBase(BaseModel):
     name: str
     brand: str
     description: str
-    category_id: str
 
 
 class ProductData(ProductBase):
-    pass
+    category_id: str
 
 
 class Product(ProductBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
+    category_id: UUID
 
     @field_serializer("id")
     def serialize_id(self, id: UUID, _info):

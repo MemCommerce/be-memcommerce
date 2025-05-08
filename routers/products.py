@@ -13,3 +13,15 @@ products_router = APIRouter(prefix="/products")
 async def post_product(product_data: ProductData, db: AsyncSession = Depends(get_db)):
     product = await ProductManager.insert_product(product_data, db)
     return product
+
+
+@products_router.get("/", response_model=list[Product])
+async def get_all_products( db: AsyncSession = Depends(get_db)):
+    products = await ProductManager.select_all_products(db)
+    return products
+
+
+@products_router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_product(product_id: str, db: AsyncSession = Depends(get_db)):
+    await ProductManager.delete_product_by_id(product_id, db)
+    return "OK"

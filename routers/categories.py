@@ -10,7 +10,9 @@ from managers.category_manager import CategoryManager
 categories_router = APIRouter(prefix="/categories")
 
 
-@categories_router.post("/", response_model=Category, status_code=status.HTTP_201_CREATED)
+@categories_router.post(
+    "/", response_model=Category, status_code=status.HTTP_201_CREATED
+)
 async def post_category(
     category_data: CategoryData, db: AsyncSession = Depends(get_db)
 ):

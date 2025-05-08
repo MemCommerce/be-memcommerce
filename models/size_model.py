@@ -10,5 +10,3 @@ class SizeModel(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     label = Column(String(10), nullable=False)
-    
-

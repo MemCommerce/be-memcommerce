@@ -1,8 +1,9 @@
 from fastapi import APIRouter
 
-from routers import category_router, products_router
+from routers import categories, colors, products
 
 
 main_router = APIRouter()
-main_router.include_router(category_router.category_router)
-main_router.include_router(products_router.product_router)
+main_router.include_router(categories.categories_router)
+main_router.include_router(products.products_router)
+main_router.include_router(colors.colors_router)

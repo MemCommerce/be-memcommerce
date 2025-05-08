@@ -22,3 +22,9 @@ async def post_category(
 async def get_all_categories(db: AsyncSession = Depends(get_db)):
     categories = await CategoryManager.select_all_categories(db)
     return categories
+
+
+@category_router.delete("/{category_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_category(category_id: str, db: AsyncSession = Depends(get_db)):
+    await CategoryManager.delete_category_by_id(category_id, db)
+    return "OK"

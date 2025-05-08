@@ -5,13 +5,14 @@ from pydantic import BaseModel, ConfigDict, field_serializer
 
 class CategoryBase(BaseModel):
     name: str
+    description: str
 
 
 class CategoryData(CategoryBase):
     pass
 
 
-class Category(BaseModel):
+class Category(CategoryBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID

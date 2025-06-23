@@ -117,11 +117,13 @@ class MCPClient:
         await self.exit_stack.aclose()
 
     async def process_messages(self, messages: list[Message]) -> Message:
+        available_tools = []
+
         response = self.anthropic.messages.create(
             model="claude-3-5-sonnet-20241022",
             max_tokens=1000,
             messages=messages,
-            # tools=available_tools,
+            tools=available_tools,
         )
         message = Message(role=response.role, content=response.content[0].text)
         return message

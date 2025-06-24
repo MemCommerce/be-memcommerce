@@ -12,12 +12,12 @@ class ColorManager:
         db.add(color)
         await db.commit()
         return Color.model_validate(color)
-    
+
     @staticmethod
     async def select_all_colors(db: AsyncSession) -> list[Color]:
         colors = (await db.execute(select(ColorModel))).scalars().all()
         return [Color.model_validate(color) for color in colors]
-    
+
     @staticmethod
     async def delete_color_by_id(id: str, db: AsyncSession) -> None:
         statement = delete(ColorModel).where(ColorModel.id == id)

@@ -18,6 +18,7 @@ class ProductVariantModel(Base):
         ForeignKey("products.id", ondelete="CASCADE"),
         nullable=False
     )
+    product = relationship("ProductModel", backref="variants")
 
     color_id = Column(UUID(as_uuid=True), ForeignKey("colors.id", ondelete="RESTRICT"), nullable=False)
     size_id = Column(UUID(as_uuid=True), ForeignKey("sizes.id", ondelete="RESTRICT"), nullable=False)

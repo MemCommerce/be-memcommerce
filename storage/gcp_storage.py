@@ -2,7 +2,6 @@ from uuid import uuid4
 from tempfile import TemporaryDirectory
 import os
 
-from google import auth
 from google.oauth2 import service_account
 from google.cloud.storage import Client
 from google.cloud.storage.blob import Blob
@@ -14,8 +13,7 @@ from config import BUCKET_NAME, SA_KEY_PATH
 
 def get_gcs_client() -> Client:
     if os.getenv("ON_CLOUD"):
-        credentials, project = auth.default()
-        client = Client(credentials)
+        client = Client()
     else:
         credentials = service_account.Credentials.from_service_account_file(SA_KEY_PATH)
         client = Client(credentials=credentials)

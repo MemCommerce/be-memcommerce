@@ -1,0 +1,2 @@
+ALTER TABLE product_variants 
+ADD COLUMN image_name VARCHAR(255) DEFAULT NULL;

@@ -16,7 +16,7 @@ async def post_product(product_data: ProductData, db: AsyncSession = Depends(get
 
 
 @products_router.get("/", response_model=list[Product])
-async def get_all_products( db: AsyncSession = Depends(get_db)):
+async def get_all_products(db: AsyncSession = Depends(get_db)):
     products = await ProductManager.select_all_products(db)
     return products
 

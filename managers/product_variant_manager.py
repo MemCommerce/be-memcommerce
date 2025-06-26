@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
@@ -8,9 +10,9 @@ from schemas.product_variant_schemas import ProductVariant, ProductVariantData
 class ProductVariantManager:
     @staticmethod
     async def insert_product_variant(
-        product_variant_data: ProductVariantData, db: AsyncSession
+        product_variant_data: ProductVariantData, image_name: Optional[str], db: AsyncSession
     ) -> ProductVariant:
-        product_variant = ProductVariantModel(**product_variant_data.model_dump())
+        product_variant = ProductVariantModel(**product_variant_data.model_dump(), image_name=image_name)
         db.add(product_variant)
         await db.commit()
         return ProductVariant.model_validate(product_variant)

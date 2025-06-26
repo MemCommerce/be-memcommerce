@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from sqlalchemy import Column, ForeignKey, Numeric, TIMESTAMP
+from sqlalchemy import Column, ForeignKey, Numeric, TIMESTAMP, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
@@ -27,6 +27,7 @@ class ProductVariantModel(Base):
     size = relationship("SizeModel", backref="variants")
 
     price = Column(Numeric(10, 2), nullable=False)
+    image_name = Column(String(255))
 
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())

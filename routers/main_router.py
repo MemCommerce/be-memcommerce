@@ -1,6 +1,13 @@
 from fastapi import APIRouter
 
-from routers import categories, colors, products, sizes, product_variants, storefront_router
+from routers import (
+    categories,
+    colors,
+    products,
+    sizes,
+    product_variants,
+    storefront_router,
+)
 
 
 main_router = APIRouter()

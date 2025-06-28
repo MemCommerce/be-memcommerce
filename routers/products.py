@@ -25,3 +25,9 @@ async def get_all_products(db: AsyncSession = Depends(get_db)):
 async def delete_product(product_id: str, db: AsyncSession = Depends(get_db)):
     await ProductManager.delete_product_by_id(product_id, db)
     return "OK"
+
+
+@products_router.put("/")
+async def put_product(product: Product, db: AsyncSession = Depends(get_db)):
+    updated_product = await ProductManager.update_product(product, db)
+    return updated_product

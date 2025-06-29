@@ -28,9 +28,9 @@ class ProductManager:
     async def update_product(product: Product, db: AsyncSession) -> Product:
         product_data = product.model_dump()
         updated_product = ProductModel(**product_data)
-        
+
         merged_product = await db.merge(updated_product)
         await db.commit()
         await db.refresh(merged_product)
-        
+
         return Product.model_validate(merged_product)

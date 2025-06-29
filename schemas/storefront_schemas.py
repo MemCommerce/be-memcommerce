@@ -6,8 +6,10 @@ class StorefrontVariant(BaseModel):
     size: str
     size_id: str
     color: str
+    color_hex: str
     color_id: str
     price: float
+    image_url: str
 
 
 class StorefrontProduct(BaseModel):

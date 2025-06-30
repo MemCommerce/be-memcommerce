@@ -53,3 +53,9 @@ async def get_all_pv(db: AsyncSession = Depends(get_db)):
         for pv in product_variants
     ]
     return pvrs
+
+
+@router.delete("/{product_variant_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_pv(product_variant_id: str, db: AsyncSession = Depends(get_db)):
+    await ProductVariantManager.delete_product_variant(product_variant_id, db)
+    return "OK"

@@ -46,7 +46,6 @@ def upload_bytes_image(
 
 def generate_signed_url(file_name, expiration_hours=1):
     try:
-        print(client._credentials)
         bucket = client.bucket(BUCKET_NAME)
         blob = Blob(file_name, bucket)
 

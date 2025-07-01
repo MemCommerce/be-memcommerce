@@ -19,7 +19,7 @@ TEST_DATABASE_URL = (
 
 GOOGLE_CLIENT_ID = environ["GOOGLE_CLIENT_ID"]
 GOOGLE_CLIENT_SECRET = environ["GOOGLE_CLIENT_SECRET"]
-GOOGLE_CALLBACK_URL = environ.get("GOOGLE_CALLBACK_URL", "http://localhost:8001/google-auth/callback")
+GOOGLE_CALLBACK_URL = environ.get("GOOGLE_CALLBACK_URL", "http://localhost:8001/auth/callback")
 
 FRONT_END_GOOGLE_LOGIN_URL = environ.get("FRONT_END_GOOGLE_LOGIN_URL", "http://localhost:3000/google-auth")
 

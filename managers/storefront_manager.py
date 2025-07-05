@@ -132,9 +132,11 @@ class StorefrontManager:
         ]
 
         return StorefrontData(products=products)
-    
+
     @staticmethod
-    async def select_paginated_storefront_data(limit: int, offset: int, db: AsyncSession) -> PaginationResponse[StorefrontProduct]:
+    async def select_paginated_storefront_data(
+        limit: int, offset: int, db: AsyncSession
+    ) -> PaginationResponse[StorefrontProduct]:
         query = text(
             """
             SELECT
@@ -196,7 +198,7 @@ class StorefrontManager:
         ]
 
         total_query = text(
-        """
+            """
         SELECT
             COUNT(p.*) 
         FROM products p

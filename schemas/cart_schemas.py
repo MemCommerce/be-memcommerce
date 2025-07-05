@@ -32,7 +32,7 @@ class CartConfig(CartBase):
     @field_serializer("user_id")
     def serialize_user_id(self, user_id: UUID, _info):
         return str(user_id)
-    
+
 
 class Cart(CartConfig):
     pass

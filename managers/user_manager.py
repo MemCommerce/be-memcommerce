@@ -12,7 +12,7 @@ class UserManager:
         db.add(user)
         await db.commit()
         return User.model_validate(user)
-    
+
     @staticmethod
     async def select_user_by_email(email: str, db: AsyncSession) -> User | None:
         stmt = select(UserModel).where(UserModel.email == email)

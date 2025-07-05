@@ -12,16 +12,20 @@ class ProductVariantModel(Base):
     __tablename__ = "product_variants"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    
+
     product_id = Column(
         UUID(as_uuid=True),
         ForeignKey("products.id", ondelete="CASCADE"),
-        nullable=False
+        nullable=False,
     )
     product = relationship("ProductModel", backref="variants")
 
-    color_id = Column(UUID(as_uuid=True), ForeignKey("colors.id", ondelete="RESTRICT"), nullable=False)
-    size_id = Column(UUID(as_uuid=True), ForeignKey("sizes.id", ondelete="RESTRICT"), nullable=False)
+    color_id = Column(
+        UUID(as_uuid=True), ForeignKey("colors.id", ondelete="RESTRICT"), nullable=False
+    )
+    size_id = Column(
+        UUID(as_uuid=True), ForeignKey("sizes.id", ondelete="RESTRICT"), nullable=False
+    )
 
     color = relationship("ColorModel", backref="variants")
     size = relationship("SizeModel", backref="variants")

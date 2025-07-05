@@ -37,7 +37,7 @@ class CartLineItemConfig(CartLineItemBase):
     @field_serializer("product_variant_id")
     def serialize_product_variant_id(self, product_variant_id: UUID, _info):
         return str(product_variant_id)
-    
+
 
 class CartLineItem(CartLineItemConfig):
     image_name: Optional[str] = None

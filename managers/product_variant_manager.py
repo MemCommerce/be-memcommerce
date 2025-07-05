@@ -30,6 +30,8 @@ class ProductVariantManager:
 
     @staticmethod
     async def delete_product_variant(product_variant_id: str, db: AsyncSession) -> None:
-        stmt = delete(ProductVariantModel).where(ProductVariantModel.id == product_variant_id)
+        stmt = delete(ProductVariantModel).where(
+            ProductVariantModel.id == product_variant_id
+        )
         await db.execute(stmt)
         await db.commit()

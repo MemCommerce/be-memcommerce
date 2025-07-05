@@ -4,7 +4,11 @@ from db import get_db
 from auth.token import get_current_user_id
 from storage.gcp_storage import generate_signed_url
 from schemas.cart_schemas import Cart, CartCreate, CartStatusEnum
-from schemas.cart_line_item_schemas import CartLineItemCreate, CartLineItemResp, CartLineItemReq
+from schemas.cart_line_item_schemas import (
+    CartLineItemCreate,
+    CartLineItemResp,
+    CartLineItemReq,
+)
 from managers.cart_manager import CartManager
 
 
@@ -61,7 +65,7 @@ async def post_cart_line_item(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No active cart found for the user",
         )
-    
+
     cart_line_item_data = CartLineItemCreate(
         product_variant_id=cart_line_item_req.product_variant_id,
         quantity=cart_line_item_req.quantity,
@@ -86,7 +90,7 @@ async def post_cart_line_item(
 
 @router.delete("/cart_line_item/{line_item_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_cart_line_item(
-    line_item_id: str, user_id: str = Depends(get_current_user_id), db = Depends(get_db)
+    line_item_id: str, user_id: str = Depends(get_current_user_id), db=Depends(get_db)
 ):
     """
     Delete a cart line item by its ID.
@@ -108,12 +112,14 @@ async def delete_cart_line_item(
     return {"message": "Cart line item deleted successfully"}
 
 
-@router.patch("/cart_line_item/{line_item_id}/{quantity}", response_model=CartLineItemResp)
+@router.patch(
+    "/cart_line_item/{line_item_id}/{quantity}", response_model=CartLineItemResp
+)
 async def patch_cart_line_item_quantity(
     line_item_id: str,
     quantity: int,
     user_id: str = Depends(get_current_user_id),
-    db = Depends(get_db),
+    db=Depends(get_db),
 ):
     """
     Update the quantity of a cart line item.
@@ -151,7 +157,7 @@ async def patch_cart_line_item_quantity(
 async def patch_cart_status(
     cart_status: CartStatusEnum,
     user_id: str = Depends(get_current_user_id),
-    db = Depends(get_db),
+    db=Depends(get_db),
 ):
     """
     Update the status of a cart.
@@ -163,5 +169,7 @@ async def patch_cart_status(
             detail="No active cart found for the user",
         )
 
-    updated_cart = await CartManager.update_cart_status(str(user_cart.id), cart_status, db)
+    updated_cart = await CartManager.update_cart_status(
+        str(user_cart.id), cart_status, db
+    )
     return updated_cart

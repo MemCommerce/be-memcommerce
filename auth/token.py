@@ -29,7 +29,7 @@ def verify_token(token: str, credentials_exception) -> str:
         user_id: str = payload.get("sub")
         if user_id is None:
             raise credentials_exception
-        
+
     except jwt.PyJWTError:
         raise credentials_exception
     return user_id

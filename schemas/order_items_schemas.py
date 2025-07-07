@@ -25,23 +25,24 @@ class OrderItem(OrderItemBase):
     @field_serializer("id")
     def serialize_id(self, id: UUID, _info):
         return str(id)
-    
+
     @field_serializer("order_id")
     def serialize_order_id(self, order_id: UUID, _info):
         return str(order_id)
-    
+
     @field_serializer("product_id")
     def serialize_product_id(self, product_id: UUID, _info):
         return str(product_id)
-    
+
     @field_serializer("product_variant_id")
     def serialize_product_variant_id(self, product_variant_id: UUID, _info):
         return str(product_variant_id)
-    
+
 
 class OrderItemResponse(OrderItem):
     """
     Response model for order items.
     This model is used to return order item details in API responses.
     """
+
     image_url: str | None = None

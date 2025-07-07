@@ -1,22 +1,19 @@
 from uuid import UUID
 
-from pydantic import BaseModel, EmailStr, ConfigDict, field_serializer
+from pydantic import BaseModel, ConfigDict, field_serializer
 
 
-class OrderBase(BaseModel):
-    full_name: str
-    email: EmailStr
-    address: str
-    city: str
-    country: str
+class ReturnBase(BaseModel):
     status: str
+    reason: str
+    order_id: str
 
 
-class OrderCreate(OrderBase):
+class ReturnCreate(ReturnBase):
     pass
 
 
-class Order(OrderBase):
+class Return(ReturnBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID

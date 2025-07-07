@@ -142,12 +142,8 @@ class CartManager:
         return CartLineItem.model_validate(line_item) if line_item else None
 
     @staticmethod
-    async def complete_cart(
-        cart_id: str, db: AsyncSession
-    ) -> Cart:
+    async def complete_cart(cart_id: str, db: AsyncSession) -> Cart:
         """
         Mark a cart as completed by updating its status.
         """
-        return await CartManager.update_cart_status(
-            cart_id, CartStatusEnum.ORDERED, db
-        )
+        return await CartManager.update_cart_status(cart_id, CartStatusEnum.ORDERED, db)

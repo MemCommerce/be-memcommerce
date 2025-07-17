@@ -6,11 +6,10 @@ from pydantic import BaseModel, ConfigDict, field_serializer
 class ReturnBase(BaseModel):
     status: str
     reason: str
-    order_id: str
 
 
 class ReturnCreate(ReturnBase):
-    pass
+    order_id: str
 
 
 class Return(ReturnBase):
@@ -18,6 +17,7 @@ class Return(ReturnBase):
 
     id: UUID
     user_id: UUID
+    order_id: UUID
 
     @field_serializer("id")
     def serialize_id(self, id: UUID, _info):
@@ -26,3 +26,7 @@ class Return(ReturnBase):
     @field_serializer("user_id")
     def serialize_user_id(self, user_id: UUID, _info):
         return str(user_id)
+    
+    @field_serializer("order_id")
+    def serialize_order_id(self, order_id: UUID, _info):
+        return str(order_id)

@@ -10,6 +10,7 @@ from routers import (
     auth_router,
     cart_router,
     order_router,
+    return_router,
 )
 
 
@@ -23,3 +24,4 @@ main_router.include_router(storefront_router.router)
 main_router.include_router(auth_router.router)
 main_router.include_router(cart_router.router)
 main_router.include_router(order_router.router)
+main_router.include_router(return_router.router)

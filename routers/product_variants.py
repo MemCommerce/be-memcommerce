@@ -6,6 +6,7 @@ from schemas.product_variant_schemas import (
     ProductVariantResp,
     ProductVariantData,
     ProductVariantCreate,
+    ProductVariantFromTempImageCreate
 )
 from managers.product_variant_manager import ProductVariantManager
 from utils.image_compression import compress_image_to_webp
@@ -28,6 +29,26 @@ async def post_product_variant(
         img_file_name_str = upload_bytes_image(image_bytes)
     else:
         img_file_name_str = None
+    product_variant_data = ProductVariantData(
+        price=product_variant_req.price,
+        color_id=product_variant_req.color_id,
+        size_id=product_variant_req.size_id,
+        product_id=product_variant_req.product_id,
+    )
+    product_variant = await ProductVariantManager.insert_product_variant(
+        product_variant_data, img_file_name_str, db
+    )
+    signed_url = generate_signed_url(product_variant.image_name)
+    response = ProductVariantResp.from_product_variant(product_variant, signed_url)
+    return response
+
+
+@router.post(
+    "/with-temp-image", response_model=ProductVariantResp, status_code=status.HTTP_201_CREATED
+)
+async def post_product_variant_with_temp_image(
+    product_variant_req: ProductVariantFromTempImageCreate, db: AsyncSession = Depends(get_db)
+):
     product_variabt_data = ProductVariantData(
         price=product_variant_req.price,
         color_id=product_variant_req.color_id,
@@ -35,7 +56,7 @@ async def post_product_variant(
         product_id=product_variant_req.product_id,
     )
     product_variant = await ProductVariantManager.insert_product_variant(
-        product_variabt_data, img_file_name_str, db
+        product_variabt_data, product_variant_req.image_name, db
     )
     signed_url = generate_signed_url(product_variant.image_name)
     response = ProductVariantResp.from_product_variant(product_variant, signed_url)

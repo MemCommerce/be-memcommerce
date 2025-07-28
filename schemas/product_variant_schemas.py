@@ -18,6 +18,10 @@ class ProductVariantCreate(ProductVariantData):
     image: Optional[str] = None
 
 
+class ProductVariantFromTempImageCreate(ProductVariantData):
+    image_name: str
+
+
 class ProductVariantConfig(ProductVariantBase):
     model_config = ConfigDict(from_attributes=True)
 

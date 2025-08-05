@@ -11,16 +11,22 @@ router = APIRouter(prefix="/returns", tags=["returns"])
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=ReturnDataRes)
-async def post_return(data: ReturnDataReq, user_id: str = Depends(get_current_user_id), db: AsyncSession = Depends(get_db)):
+async def post_return(
+    data: ReturnDataReq,
+    user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db),
+):
     """
     Create a new return request.
     """
     return_data = await ReturnManager.create_return(data, user_id, db)
-    
+
     return return_data
 
 
 @router.get("/", response_model=list[ReturnDataRes])
-async def get_user_returns(user_id: str = Depends(get_current_user_id), db: AsyncSession = Depends(get_db)):
+async def get_user_returns(
+    user_id: str = Depends(get_current_user_id), db: AsyncSession = Depends(get_db)
+):
     returns_datas = await ReturnManager.select_user_returns(user_id, db)
     return returns_datas

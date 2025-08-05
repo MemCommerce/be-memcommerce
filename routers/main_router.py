@@ -11,7 +11,8 @@ from routers import (
     cart_router,
     order_router,
     return_router,
-    image_router
+    image_router,
+    review_router,
 )
 
 
@@ -27,3 +28,4 @@ main_router.include_router(cart_router.router)
 main_router.include_router(order_router.router)
 main_router.include_router(return_router.router)
 main_router.include_router(image_router.router)
+main_router.include_router(review_router.router)

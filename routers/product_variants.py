@@ -6,7 +6,7 @@ from schemas.product_variant_schemas import (
     ProductVariantResp,
     ProductVariantData,
     ProductVariantCreate,
-    ProductVariantFromTempImageCreate
+    ProductVariantFromTempImageCreate,
 )
 from managers.product_variant_manager import ProductVariantManager
 from utils.image_compression import compress_image_to_webp
@@ -44,10 +44,13 @@ async def post_product_variant(
 
 
 @router.post(
-    "/with-temp-image", response_model=ProductVariantResp, status_code=status.HTTP_201_CREATED
+    "/with-temp-image",
+    response_model=ProductVariantResp,
+    status_code=status.HTTP_201_CREATED,
 )
 async def post_product_variant_with_temp_image(
-    product_variant_req: ProductVariantFromTempImageCreate, db: AsyncSession = Depends(get_db)
+    product_variant_req: ProductVariantFromTempImageCreate,
+    db: AsyncSession = Depends(get_db),
 ):
     product_variabt_data = ProductVariantData(
         price=product_variant_req.price,

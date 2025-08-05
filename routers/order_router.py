@@ -38,9 +38,7 @@ async def post_order(
     order = await OrderManager.create_order_and_order_items_from_cart(
         order_data, cart, cart_line_items, db
     )
-    await CartManager.complete_cart(
-        str(cart.id), db
-    )
+    await CartManager.complete_cart(str(cart.id), db)
     return order
 
 
@@ -57,13 +55,13 @@ async def get_order_info(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Order with id {order_id} not found.",
         )
-    
+
     if str(order_info.order.user_id) != user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You do not have permission to access this order.",
         )
-    
+
     response = OrderInfoResponse(
         order=order_info.order,
         order_items=[
@@ -76,11 +74,14 @@ async def get_order_info(
                 order_id=item.order_id,
                 product_id=item.product_id,
                 product_variant_id=item.product_variant_id,
-                image_url=generate_signed_url(item.image_name) if item.image_name else None
-            ) for item in order_info.order_items
-        ]
+                image_url=generate_signed_url(item.image_name)
+                if item.image_name
+                else None,
+            )
+            for item in order_info.order_items
+        ],
     )
-    
+
     return response
 
 
@@ -104,10 +105,14 @@ async def get_user_orders(
                     order_id=item.order_id,
                     product_id=item.product_id,
                     product_variant_id=item.product_variant_id,
-                    image_url=generate_signed_url(item.image_name) if item.image_name else None
-                ) for item in order_info.order_items
-            ]
-        ) for order_info in orders_info
+                    image_url=generate_signed_url(item.image_name)
+                    if item.image_name
+                    else None,
+                )
+                for item in order_info.order_items
+            ],
+        )
+        for order_info in orders_info
     ]
-    
+
     return response

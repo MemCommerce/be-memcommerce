@@ -21,18 +21,26 @@ async def get_by_id(review_id: str, db: AsyncSession = Depends(get_db)):
     try:
         review = await ReviewManager.select_review_by_id(review_id, db)
     except NoResultFound:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"No review found with id {review_id}")
-    
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No review found with id {review_id}",
+        )
+
     return review
 
 
 @router.put("/{review_id}", response_model=Review)
-async def put_review(review_id: str, data: ReviewData, db: AsyncSession = Depends(get_db)):
+async def put_review(
+    review_id: str, data: ReviewData, db: AsyncSession = Depends(get_db)
+):
     try:
         review = await ReviewManager.update_review(review_id, data, db)
     except NoResultFound:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"No review found with id {review_id}")
-    
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No review found with id {review_id}",
+        )
+
     return review
 
 
@@ -41,6 +49,9 @@ async def delete_by_id(review_id: str, db: AsyncSession = Depends(get_db)):
     try:
         await ReviewManager.delete_review(review_id, db)
     except NoResultFound:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"No review found with id {review_id}")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No review found with id {review_id}",
+        )
 
     return "OK"

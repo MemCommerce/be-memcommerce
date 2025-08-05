@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import NoResultFound
 
 from schemas.colors_schemas import ColorData, Color
 from managers.color_manager import ColorManager
@@ -24,3 +25,20 @@ async def get_all_colors(db: AsyncSession = Depends(get_db)):
 async def delete_color(color_id: str, db: AsyncSession = Depends(get_db)):
     await ColorManager.delete_color_by_id(color_id, db)
     return "OK"
+
+
+@colors_router.put("/{color_id}", response_model=Color)
+async def put_category(
+    color_id: str, color_data: ColorData, db: AsyncSession = Depends(get_db)
+):
+    try:
+        updated_category = await ColorManager.update_color(
+            color_id, color_data, db
+        )
+    except NoResultFound:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No color found with id {color_id}.",
+        )
+
+    return updated_category

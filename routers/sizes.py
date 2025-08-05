@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import NoResultFound
 
 from db import get_db
 from schemas.size_schemas import Size, SizeData
@@ -25,3 +26,20 @@ async def get_all_sizes(db: AsyncSession = Depends(get_db)):
 async def delete_size(size_id: str, db: AsyncSession = Depends(get_db)):
     await SizeManager.delete_size_by_id(size_id, db)
     return "OK"
+
+
+@router.put("/{size_id}", response_model=Size)
+async def put_category(
+    size_id: str, size_data: SizeData, db: AsyncSession = Depends(get_db)
+):
+    try:
+        updated_size = await SizeManager.update_size(
+            size_id, size_data, db
+        )
+    except NoResultFound:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No size found with id {size_id}.",
+        )
+
+    return updated_size

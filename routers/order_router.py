@@ -7,6 +7,7 @@ from db import get_db
 from storage.gcp_storage import generate_signed_url
 from managers.cart_manager import CartManager
 from managers.order_manager import OrderManager
+from managers.review_manager import ReviewManager
 from schemas.order_schemas import OrderCreate, Order
 from schemas.order_items_schemas import OrderItemResponse
 from schemas.order_info_schemas import OrderInfoResponse
@@ -105,6 +106,7 @@ async def get_user_orders(
                     order_id=item.order_id,
                     product_id=item.product_id,
                     product_variant_id=item.product_variant_id,
+                    review=await ReviewManager.select_review_by_order_item_id(str(item.id), db),
                     image_url=generate_signed_url(item.image_name)
                     if item.image_name
                     else None,

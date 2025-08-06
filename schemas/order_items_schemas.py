@@ -2,6 +2,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, field_serializer
 
+from schemas.review_schemas import Review
+
 
 class OrderItemBase(BaseModel):
     name: str
@@ -46,3 +48,4 @@ class OrderItemResponse(OrderItem):
     """
 
     image_url: str | None = None
+    review: Review | None = None

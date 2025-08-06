@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import NoResultFound
@@ -8,8 +10,8 @@ from schemas.review_schemas import Review, ReviewData
 
 class ReviewManager:
     @staticmethod
-    async def insert_review(data: ReviewData, db: AsyncSession) -> Review:
-        review = ReviewModel(**data.model_dump())
+    async def insert_review(data: ReviewData, db: AsyncSession, user_id: str) -> Review:
+        review = ReviewModel(**data.model_dump(), user_id=user_id)
         db.add(review)
         await db.commit()
         return Review.model_validate(review)
@@ -21,6 +23,16 @@ class ReviewManager:
 
         if not review:
             raise NoResultFound()
+        
+        return Review.model_validate(review)
+    
+    @staticmethod
+    async def select_review_by_order_item_id(order_item_id: str, db: AsyncSession) -> Optional[Review]:
+        stmt = select(ReviewModel).where(ReviewModel.order_item_id == order_item_id)
+        review = (await db.execute(stmt)).scalar_one_or_none()
+
+        if not review:
+            return None
         
         return Review.model_validate(review)
     

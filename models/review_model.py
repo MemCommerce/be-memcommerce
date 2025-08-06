@@ -16,6 +16,12 @@ class ReviewModel(Base):
        ForeignKey("product_variants.id", ondelete="CASCADE"),
        nullable=False,
    )
+
+   order_item_id = Column(
+       UUID(as_uuid=True),
+       ForeignKey("order_items.id", ondelete="CASCADE"),
+       nullable=False,
+   )
    
    user_id = Column(
        UUID(as_uuid=True),

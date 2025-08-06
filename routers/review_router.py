@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import NoResultFound
 
 from db import get_db
+from auth.token import get_current_user_id
 from schemas.review_schemas import Review, ReviewData
 from managers.review_manager import ReviewManager
 
@@ -11,8 +12,8 @@ router = APIRouter(prefix="/reviews", tags=["Reviews"])
 
 
 @router.post("/", response_model=Review, status_code=status.HTTP_201_CREATED)
-async def post_review(data: ReviewData, db: AsyncSession = Depends(get_db)):
-    review = await ReviewManager.insert_review(data, db)
+async def post_review(data: ReviewData, db: AsyncSession = Depends(get_db), user_id: str = Depends(get_current_user_id)):
+    review = await ReviewManager.insert_review(data, db, user_id)
     return review
 
 

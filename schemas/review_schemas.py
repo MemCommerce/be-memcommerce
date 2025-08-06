@@ -11,7 +11,7 @@ class ReviewBase(BaseModel):
 
 class ReviewData(ReviewBase):
    product_variant_id: str
-   user_id: str
+   order_item_id: str
 
 
 class Review(ReviewBase):
@@ -19,6 +19,7 @@ class Review(ReviewBase):
 
    id: UUID
    product_variant_id: UUID
+   order_item_id: UUID
    user_id: UUID
 
    @field_serializer("id")
@@ -28,6 +29,10 @@ class Review(ReviewBase):
    @field_serializer("product_variant_id")
    def serialize_product_variant_id(self, product_variant_id: UUID, _info):
        return str(product_variant_id)
+   
+   @field_serializer("order_item_id")
+   def serialize_order_item_id(self, order_item_id: UUID, _info):
+       return str(order_item_id)
 
    @field_serializer("user_id")
    def serialize_user_id(self, user_id: UUID, _info):

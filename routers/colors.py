@@ -32,9 +32,7 @@ async def put_category(
     color_id: str, color_data: ColorData, db: AsyncSession = Depends(get_db)
 ):
     try:
-        updated_category = await ColorManager.update_color(
-            color_id, color_data, db
-        )
+        updated_category = await ColorManager.update_color(color_id, color_data, db)
     except NoResultFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

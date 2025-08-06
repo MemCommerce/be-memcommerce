@@ -33,9 +33,7 @@ async def put_category(
     size_id: str, size_data: SizeData, db: AsyncSession = Depends(get_db)
 ):
     try:
-        updated_size = await SizeManager.update_size(
-            size_id, size_data, db
-        )
+        updated_size = await SizeManager.update_size(size_id, size_data, db)
     except NoResultFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

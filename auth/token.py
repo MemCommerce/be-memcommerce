@@ -8,7 +8,8 @@ from config import JWT_KEY
 from schemas.user_schemas import User
 
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_DAYS = 2
+ACCESS_TOKEN_EXPIRE_DAYS = 5
+REFRESH_TOKEN_EXPIRE_DAYS = 30
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -18,6 +19,15 @@ def create_access_token(user: User) -> str:
     payload = {
         "sub": str(user.id),
         "exp": datetime.now(UTC) + timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS),
+    }
+    encoded_jwt = jwt.encode(payload, JWT_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+
+def create_refresh_token(user: User) -> str:
+    payload = {
+        "sub": str(user.id),
+        "exp": datetime.now(UTC) + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS),
     }
     encoded_jwt = jwt.encode(payload, JWT_KEY, algorithm=ALGORITHM)
     return encoded_jwt

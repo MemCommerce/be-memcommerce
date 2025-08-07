@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from db import get_db
 from managers.storefront_manager import StorefrontManager
-from schemas.storefront_schemas import StorefrontData, StorefrontProduct
+from schemas.storefront_schemas import StorefrontData, StorefrontProduct, SFProductWithReviews
 from schemas.pagination_schemas import PaginationResponse
 
 
@@ -27,7 +27,7 @@ async def get_paginated_storefront(
     return data
 
 
-@router.get("/product/{product_id}", response_model=StorefrontProduct)
+@router.get("/product/{product_id}", response_model=SFProductWithReviews)
 async def get_storefront_product_by_id(
     product_id: str, db: AsyncSession = Depends(get_db)
 ):

@@ -6,6 +6,8 @@ from schemas.storefront_schemas import (
     StorefrontData,
     StorefrontProduct,
     StorefrontVariant,
+    SFReview,
+    SFProductWithReviews,
 )
 from schemas.pagination_schemas import PaginationResponse
 from storage.gcp_storage import generate_signed_url
@@ -35,7 +37,22 @@ class StorefrontManager:
                         'price', pv.price,
                         'image_name', pv.image_name
                     )
-                ) FROM product_variants pv WHERE pv.product_id = p.id) as variants
+                ) FROM product_variants pv WHERE pv.product_id = p.id) AS variants,
+                (
+                    SELECT json_agg(
+                        json_build_object(
+                            'id', r.id,
+                            'title', r.title,
+                            'rating', r.rating,
+                            'content', r.content,
+                            'product_variant_id', r.product_variant_id,
+                            'name', u.first_name
+                        )
+					) 
+                    FROM reviews r 
+				    JOIN users u ON u.id = r.user_id
+				    WHERE r.product_variant_id IN (SELECT id FROM product_variants prv WHERE prv.product_id = p.id)
+                ) AS reviews
             FROM products p
             JOIN categories c ON c.id = p.category_id
             WHERE p.id = :product_id
@@ -46,7 +63,7 @@ class StorefrontManager:
         if row is None:
             raise NoResultFound(f"Product with id {product_id} is not found!")
 
-        product = StorefrontProduct(
+        product = SFProductWithReviews(
             id=str(row["id"]),
             name=row["name"],
             brand=row["brand"],
@@ -69,6 +86,17 @@ class StorefrontManager:
                 )
                 for variant in (row["variants"] or [])
             ],
+            reviews=[
+                SFReview(
+                    id=review["id"],
+                    rating=review["rating"],
+                    title=review["title"],
+                    content=review["content"],
+                    product_variant_id=review["product_variant_id"],
+                    reviewer_name=review["name"]
+                )
+                for review in (row["reviews"] or [])
+            ]
         )
         return product
 

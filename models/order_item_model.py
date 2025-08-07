@@ -10,6 +10,7 @@ from sqlalchemy import (
     TIMESTAMP,
     func,
 )
+from sqlalchemy.orm import relationship
 
 from db import Base
 
@@ -32,3 +33,7 @@ class OrderItemModel(Base):
 
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
+
+    order = relationship("OrderModel", back_populates="line_items")
+
+

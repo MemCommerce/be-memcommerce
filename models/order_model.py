@@ -1,6 +1,7 @@
 from uuid import uuid4
 
 from sqlalchemy import Column, UUID, String, TIMESTAMP, func
+from sqlalchemy.orm import relationship
 
 from db import Base
 
@@ -22,3 +23,5 @@ class OrderModel(Base):
 
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
+
+    line_items = relationship("OrderItemModel", back_populates="order", cascade="all, delete-orphan")

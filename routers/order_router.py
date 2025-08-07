@@ -10,10 +10,10 @@ from managers.order_manager import OrderManager
 from managers.review_manager import ReviewManager
 from schemas.order_schemas import OrderCreate, Order
 from schemas.order_items_schemas import OrderItemResponse
-from schemas.order_info_schemas import OrderInfoResponse
+from schemas.order_info_schemas import OrderInfoResponse, OrderWithItems
 
 
-router = APIRouter(prefix="/orders", tags=["orders"])
+router = APIRouter(prefix="/orders", tags=["Orders"])
 
 
 @router.post("/", response_model=Order, status_code=status.HTTP_201_CREATED)
@@ -41,6 +41,12 @@ async def post_order(
     )
     await CartManager.complete_cart(str(cart.id), db)
     return order
+
+
+@router.get("/", response_model=list[OrderWithItems], description="Admin route to get orders.")
+async def get_orders(db: AsyncSession = Depends(get_db)):
+    orders = await OrderManager.select_orders(db)
+    return orders
 
 
 @router.get("/order-info/{order_id}", response_model=OrderInfoResponse)

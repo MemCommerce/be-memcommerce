@@ -1,13 +1,14 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
+from sqlalchemy.orm import joinedload
 
 from schemas.cart_schemas import Cart
 from schemas.cart_line_item_schemas import CartLineItem
 from schemas.order_schemas import OrderCreate, Order
 from schemas.product_variant_schemas import ProductVariant
 from schemas.product_schemas import Product
-from schemas.order_info_schemas import OrderInfo
+from schemas.order_info_schemas import OrderInfo, OrderWithItems
 from schemas.order_items_schemas import OrderItem
 from models.order_model import OrderModel
 from models.order_item_model import OrderItemModel
@@ -111,3 +112,11 @@ class OrderManager:
             orders_info.append(OrderInfo(order=order_row, order_items=order_items))
 
         return orders_info
+
+    @staticmethod
+    async def select_orders(db: AsyncSession) -> list[OrderWithItems]:
+        stmt = select(OrderModel).options(joinedload(OrderModel.line_items))
+        result = await db.execute(stmt)
+        rows = result.unique().scalars().all()
+    
+        return [OrderWithItems.model_validate(row) for row in rows]

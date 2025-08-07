@@ -20,3 +20,7 @@ class OrderInfoResponse(BaseModel):
 
 class OrdersInfosResponse(BaseModel):
     orders: list[OrderInfoResponse]
+
+
+class OrderWithItems(Order):
+    line_items: list[OrderItem]

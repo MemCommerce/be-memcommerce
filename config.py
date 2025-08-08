@@ -25,3 +25,8 @@ IS_DEV = bool(environ.get("IS_DEV", False))
 
 SA_KEY_PATH = environ.get("SA_KEY_PATH")
 BUCKET_NAME = environ["BUCKET_NAME"]
+
+GMAIL_ADDRESS = environ["GMAIL_ADDRESS"]
+GMAIL_PASSWORD = environ["GMAIL_APP_PASSWORD"]
+
+REVIEW_PROCESS_START_URL = environ["REVIEW_PROCESS_START_URL"]

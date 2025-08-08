@@ -13,6 +13,7 @@ from routers import (
     return_router,
     image_router,
     review_router,
+    email_router,
 )
 
 
@@ -29,3 +30,4 @@ main_router.include_router(order_router.router)
 main_router.include_router(return_router.router)
 main_router.include_router(image_router.router)
 main_router.include_router(review_router.router)
+main_router.include_router(email_router.router)

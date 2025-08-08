@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 class StorefrontVariant(BaseModel):
     id: str
     size: str
@@ -27,7 +28,6 @@ class StorefrontProduct(BaseModel):
     description: str
     category_name: str
     variants: list[StorefrontVariant]
-    
 
 
 class StorefrontData(BaseModel):

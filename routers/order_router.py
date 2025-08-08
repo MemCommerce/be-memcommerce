@@ -43,7 +43,9 @@ async def post_order(
     return order
 
 
-@router.get("/", response_model=list[OrderWithItems], description="Admin route to get orders.")
+@router.get(
+    "/", response_model=list[OrderWithItems], description="Admin route to get orders."
+)
 async def get_orders(db: AsyncSession = Depends(get_db)):
     orders = await OrderManager.select_orders(db)
     return orders
@@ -112,7 +114,9 @@ async def get_user_orders(
                     order_id=item.order_id,
                     product_id=item.product_id,
                     product_variant_id=item.product_variant_id,
-                    review=await ReviewManager.select_review_by_order_item_id(str(item.id), db),
+                    review=await ReviewManager.select_review_by_order_item_id(
+                        str(item.id), db
+                    ),
                     image_url=generate_signed_url(item.image_name)
                     if item.image_name
                     else None,
@@ -127,6 +131,8 @@ async def get_user_orders(
 
 
 @router.patch("/{order_id}/delivered", response_model=Order)
-async def change_orders_status_to_delivered(order_id: str, db: AsyncSession = Depends(get_db)):
+async def change_orders_status_to_delivered(
+    order_id: str, db: AsyncSession = Depends(get_db)
+):
     order = await OrderManager.change_status_to_delivered(order_id, db)
     return order

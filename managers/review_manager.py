@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import NoResultFound
 
 from models.review_model import ReviewModel
-from schemas.review_schemas import Review, ReviewData
+from schemas.review_schemas import Review, ReviewData, ReviewSentiment
 
 
 class ReviewManager:
@@ -53,6 +53,23 @@ class ReviewManager:
 
         return Review.model_validate(review)
     
+    @staticmethod
+    async def update_review_sentiment(review_id: str, sentiment_data: ReviewSentiment, db: AsyncSession) -> Review:
+        stmt = select(ReviewModel).where(ReviewModel.id == review_id)
+        result = await db.execute(stmt)
+        review = result.scalar_one_or_none()
+
+        if not review:
+            raise NoResultFound()
+        
+        for field, value in sentiment_data.model_dump(exclude_unset=True).items():
+            setattr(review, field, value)
+
+        await db.commit()
+        await db.refresh(review)
+
+        return Review.model_validate(review)
+
     @staticmethod
     async def delete_review(review_id: str, db: AsyncSession) -> None:
         stmt = select(ReviewModel).where(ReviewModel.id == review_id)

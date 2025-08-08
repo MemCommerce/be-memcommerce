@@ -35,5 +35,3 @@ class OrderItemModel(Base):
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
 
     order = relationship("OrderModel", back_populates="line_items")
-
-

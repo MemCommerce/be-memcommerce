@@ -24,4 +24,6 @@ class OrderModel(Base):
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
 
-    line_items = relationship("OrderItemModel", back_populates="order", cascade="all, delete-orphan")
+    line_items = relationship(
+        "OrderItemModel", back_populates="order", cascade="all, delete-orphan"
+    )

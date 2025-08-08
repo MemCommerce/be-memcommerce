@@ -1,5 +1,7 @@
+from datetime import datetime, UTC
+
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import joinedload
 
@@ -120,3 +122,24 @@ class OrderManager:
         rows = result.unique().scalars().all()
     
         return [OrderWithItems.model_validate(row) for row in rows]
+
+    @staticmethod
+    async def change_status(order_id: str, status: str, db: AsyncSession) -> Order:
+        stmt = select(OrderModel).where(OrderModel.id == order_id)
+        result = await db.execute(stmt)
+        order = result.scalar_one_or_none()
+
+        if not order:
+            raise NoResultFound()
+        
+        order.status = status # type: ignore
+
+        db.add(order)
+        await db.commit()
+        await db.refresh(order)
+
+        return order 
+    
+    @staticmethod
+    async def change_status_to_delivered(order_id: str, db: AsyncSession) -> Order:
+        return await OrderManager.change_status(order_id, "delivered", db)

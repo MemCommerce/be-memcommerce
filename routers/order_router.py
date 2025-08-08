@@ -124,3 +124,9 @@ async def get_user_orders(
     ]
 
     return response
+
+
+@router.patch("/{order_id}/delivered", response_model=Order)
+async def change_orders_status_to_delivered(order_id: str, db: AsyncSession = Depends(get_db)):
+    order = await OrderManager.change_status_to_delivered(order_id, db)
+    return order

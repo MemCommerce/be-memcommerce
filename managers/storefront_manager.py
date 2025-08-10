@@ -101,7 +101,7 @@ class StorefrontManager:
         return product
 
     @staticmethod
-    async def select_hole_storefront_data(db: AsyncSession) -> StorefrontData:
+    async def select_whole_storefront_data(db: AsyncSession) -> StorefrontData:
         query = text(
             """
             SELECT

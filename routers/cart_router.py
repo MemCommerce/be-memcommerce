@@ -153,7 +153,7 @@ async def patch_cart_line_item_quantity(
     return response_data
 
 
-@router.patch("/{status}", response_model=Cart)
+@router.patch("/{cart_status}", response_model=Cart)
 async def patch_cart_status(
     cart_status: CartStatusEnum,
     user_id: str = Depends(get_current_user_id),

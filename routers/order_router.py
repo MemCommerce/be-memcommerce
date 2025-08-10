@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import NoResultFound
 
@@ -11,6 +11,7 @@ from managers.review_manager import ReviewManager
 from schemas.order_schemas import OrderCreate, Order
 from schemas.order_items_schemas import OrderItemResponse
 from schemas.order_info_schemas import OrderInfoResponse, OrderWithItems
+from schemas.pagination_schemas import PaginationResponse
 
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
@@ -44,10 +45,20 @@ async def post_order(
 
 
 @router.get(
-    "/", response_model=list[OrderWithItems], description="Admin route to get orders."
+    "/",
+    response_model=PaginationResponse[OrderWithItems],
+    description="Admin route to get orders.",
 )
-async def get_orders(db: AsyncSession = Depends(get_db)):
-    orders = await OrderManager.select_orders(db)
+async def get_orders(
+    page: int = Query(1, ge=1, description="Page number starting from 1"),
+    limit: int = Query(10, ge=1, le=100, description="Number of items per page"),
+    order_status: str | None = Query(
+        None, alias="status", description="Filter by order status"
+    ),
+    db: AsyncSession = Depends(get_db),
+):
+    offset = (page - 1) * limit
+    orders = await OrderManager.select_orders(limit, offset, db, order_status)
     return orders
 
 

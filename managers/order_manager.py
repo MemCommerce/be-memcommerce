@@ -1,5 +1,3 @@
-from datetime import datetime, UTC
-
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from sqlalchemy.exc import NoResultFound
@@ -12,6 +10,7 @@ from schemas.product_variant_schemas import ProductVariant
 from schemas.product_schemas import Product
 from schemas.order_info_schemas import OrderInfo, OrderWithItems
 from schemas.order_items_schemas import OrderItem
+from schemas.pagination_schemas import PaginationResponse
 from models.order_model import OrderModel
 from models.order_item_model import OrderItemModel
 from models.product_model import ProductModel
@@ -116,12 +115,29 @@ class OrderManager:
         return orders_info
 
     @staticmethod
-    async def select_orders(db: AsyncSession) -> list[OrderWithItems]:
+    async def select_orders(
+        limit: int,
+        offset: int,
+        db: AsyncSession,
+        status: str | None = None,
+    ) -> PaginationResponse[OrderWithItems]:
         stmt = select(OrderModel).options(joinedload(OrderModel.line_items))
+        count_stmt = select(func.count()).select_from(OrderModel)
+
+        if status:
+            stmt = stmt.where(OrderModel.status == status)
+            count_stmt = count_stmt.where(OrderModel.status == status)
+
+        stmt = stmt.limit(limit).offset(offset)
+
         result = await db.execute(stmt)
         rows = result.unique().scalars().all()
-    
-        return [OrderWithItems.model_validate(row) for row in rows]
+
+        count_result = await db.execute(count_stmt)
+        total = count_result.scalar() or 0
+
+        orders = [OrderWithItems.model_validate(row) for row in rows]
+        return PaginationResponse(items=orders, total=int(total))
 
     @staticmethod
     async def change_status(order_id: str, status: str, db: AsyncSession) -> Order:

@@ -11,6 +11,8 @@ from routers import (
     cart_router,
     order_router,
     return_router,
+    claim_router,
+    refund_router,
     image_router,
     review_router,
     email_router,
@@ -28,6 +30,8 @@ main_router.include_router(auth_router.router)
 main_router.include_router(cart_router.router)
 main_router.include_router(order_router.router)
 main_router.include_router(return_router.router)
+main_router.include_router(claim_router.router)
+main_router.include_router(refund_router.router)
 main_router.include_router(image_router.router)
 main_router.include_router(review_router.router)
 main_router.include_router(email_router.router)

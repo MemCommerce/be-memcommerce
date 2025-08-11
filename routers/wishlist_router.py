@@ -69,7 +69,7 @@ async def delete_wishlist_item(
 ):
     """Delete a wishlist item by its ID."""
     existing_item = await WishlistManager.select_wishlist_item_by_id(item_id, db)
-    if not existing_item or existing_item.user_id != user_id:
+    if not existing_item or str(existing_item.user_id) != user_id:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Item not found or does not belong to the user",

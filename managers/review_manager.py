@@ -5,7 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import NoResultFound
 
 from models.review_model import ReviewModel
+from models.order_item_model import OrderItemModel
 from schemas.review_schemas import Review, ReviewData, ReviewSentiment
+from schemas.order_items_schemas import OrderItem
 
 
 class ReviewManager:
@@ -81,3 +83,21 @@ class ReviewManager:
 
         await db.delete(review)
         await db.commit()
+
+    @staticmethod
+    async def select_reviews_with_order_items_by_user_id(
+        user_id: str, db: AsyncSession
+    ) -> list[tuple[Review, OrderItem]]:
+        """Return all reviews for a user with their related order items."""
+        stmt = (
+            select(ReviewModel, OrderItemModel)
+            .join(OrderItemModel, ReviewModel.order_item_id == OrderItemModel.id)
+            .where(ReviewModel.user_id == user_id)
+        )
+        result = await db.execute(stmt)
+        rows = result.all()
+
+        return [
+            (Review.model_validate(review_row), OrderItem.model_validate(order_item_row))
+            for review_row, order_item_row in rows
+        ]

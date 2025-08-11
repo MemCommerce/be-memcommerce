@@ -1,12 +1,14 @@
-from fastapi import APIRouter, status, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import NoResultFound
 from httpx import AsyncClient
 
-from db import get_db
 from auth.token import get_current_user_id
-from schemas.review_schemas import Review, ReviewData, ReviewSentiment
+from db import get_db
 from managers.review_manager import ReviewManager
+from schemas.review_schemas import Review, ReviewData, ReviewSentiment
+from schemas.user_review_schemas import OrderItemWithImage, UserReviewResponse
+from storage.gcp_storage import generate_signed_url
 from config import REVIEW_PROCESS_START_URL
 
 
@@ -29,6 +31,31 @@ async def post_review(
     review = await ReviewManager.insert_review(data, db, user_id)
     background_tasks.add_task(post_review_process, review)
     return review
+
+
+@router.get("/user-reviews", response_model=list[UserReviewResponse])
+async def get_user_reviews(
+    user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db),
+):
+    reviews_with_items = await ReviewManager.select_reviews_with_order_items_by_user_id(
+        user_id, db
+    )
+
+    response: list[UserReviewResponse] = []
+    for review, order_item in reviews_with_items:
+        image_url = (
+            generate_signed_url(order_item.image_name)
+            if order_item.image_name
+            else None
+        )
+        order_item_resp = OrderItemWithImage(
+            **order_item.model_dump(),
+            image_url=image_url,
+        )
+        response.append(UserReviewResponse(review=review, order_item=order_item_resp))
+
+    return response
 
 
 @router.get("/{review_id}", response_model=Review)

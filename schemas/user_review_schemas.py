@@ -10,6 +10,6 @@ class OrderItemWithImage(OrderItem):
 
 
 class UserReviewResponse(BaseModel):
-    """Response model containing a review and its related order item."""
-    review: Review
+    """Response model containing an order item and its related review if any."""
+    review: Review | None = None
     order_item: OrderItemWithImage

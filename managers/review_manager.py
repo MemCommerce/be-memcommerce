@@ -6,6 +6,7 @@ from sqlalchemy.exc import NoResultFound
 
 from models.review_model import ReviewModel
 from models.order_item_model import OrderItemModel
+from models.order_model import OrderModel
 from schemas.review_schemas import Review, ReviewData, ReviewSentiment
 from schemas.order_items_schemas import OrderItem
 
@@ -87,17 +88,22 @@ class ReviewManager:
     @staticmethod
     async def select_reviews_with_order_items_by_user_id(
         user_id: str, db: AsyncSession
-    ) -> list[tuple[Review, OrderItem]]:
-        """Return all reviews for a user with their related order items."""
+    ) -> list[tuple[Optional[Review], OrderItem]]:
+        """Return all order items for a user with their related reviews if any."""
         stmt = (
             select(ReviewModel, OrderItemModel)
-            .join(OrderItemModel, ReviewModel.order_item_id == OrderItemModel.id)
-            .where(ReviewModel.user_id == user_id)
+            .select_from(OrderItemModel)
+            .join(OrderModel, OrderItemModel.order_id == OrderModel.id)
+            .outerjoin(ReviewModel, ReviewModel.order_item_id == OrderItemModel.id)
+            .where(OrderModel.user_id == user_id)
         )
         result = await db.execute(stmt)
         rows = result.all()
 
         return [
-            (Review.model_validate(review_row), OrderItem.model_validate(order_item_row))
+            (
+                Review.model_validate(review_row) if review_row else None,
+                OrderItem.model_validate(order_item_row),
+            )
             for review_row, order_item_row in rows
         ]

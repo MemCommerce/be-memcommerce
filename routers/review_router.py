@@ -38,12 +38,12 @@ async def get_user_reviews(
     user_id: str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db),
 ):
-    reviews_with_items = await ReviewManager.select_reviews_with_order_items_by_user_id(
+    items_with_reviews = await ReviewManager.select_reviews_with_order_items_by_user_id(
         user_id, db
     )
 
     response: list[UserReviewResponse] = []
-    for review, order_item in reviews_with_items:
+    for review, order_item in items_with_reviews:
         image_url = (
             generate_signed_url(order_item.image_name)
             if order_item.image_name

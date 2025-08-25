@@ -22,7 +22,7 @@ async def post_wishlist_item(
 ):
     """Add a new item to the user's wishlist."""
     item_data = WishlistItemCreate(
-        product_variant_id=item_req.product_variant_id,
+        product_id=item_req.product_id,
         price=item_req.price,
         name=item_req.name,
         user_id=user_id,
@@ -33,7 +33,7 @@ async def post_wishlist_item(
     response_data = WishlistItemResp(
         id=wishlist_item.id,
         user_id=wishlist_item.user_id,
-        product_variant_id=wishlist_item.product_variant_id,
+        product_id=wishlist_item.product_id,
         price=wishlist_item.price,
         name=wishlist_item.name,
         image_url=image_url,
@@ -54,7 +54,7 @@ async def get_user_wishlist(
             WishlistItemResp(
                 id=item.id,
                 user_id=item.user_id,
-                product_variant_id=item.product_variant_id,
+                product_id=item.product_id,
                 price=item.price,
                 name=item.name,
                 image_url=image_url,

@@ -10,7 +10,7 @@ class WishlistItemModel(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     user_id = Column(UUID(as_uuid=True), nullable=False)
-    product_variant_id = Column(UUID(as_uuid=True), nullable=False)
+    product_id = Column(UUID(as_uuid=True), nullable=False)
     price = Column(Numeric(10, 2), nullable=False)
     image_name = Column(String(255))
     name = Column(String(100), nullable=False)

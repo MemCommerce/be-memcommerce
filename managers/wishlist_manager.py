@@ -14,7 +14,7 @@ class WishlistManager:
         """Insert a new wishlist item into the database."""
         image_name = await db.execute(
             select(ProductVariantModel.image_name).where(
-                ProductVariantModel.id == item_data.product_variant_id
+                ProductVariantModel.product_id == item_data.product_id
             )
         )
         image_name = image_name.scalars().first()

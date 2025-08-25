@@ -10,11 +10,11 @@ class WishlistItemBase(BaseModel):
 
 
 class WishlistItemReq(WishlistItemBase):
-    product_variant_id: str
+    product_id: str
 
 
 class WishlistItemCreate(WishlistItemBase):
-    product_variant_id: str
+    product_id: str
     user_id: str
 
 
@@ -23,7 +23,7 @@ class WishlistItemConfig(WishlistItemBase):
 
     id: UUID
     user_id: UUID
-    product_variant_id: UUID
+    product_id: UUID
 
     @field_serializer("id")
     def serialize_id(self, id: UUID, _info):
@@ -33,9 +33,9 @@ class WishlistItemConfig(WishlistItemBase):
     def serialize_user_id(self, user_id: UUID, _info):
         return str(user_id)
 
-    @field_serializer("product_variant_id")
-    def serialize_product_variant_id(self, product_variant_id: UUID, _info):
-        return str(product_variant_id)
+    @field_serializer("product_id")
+    def serialize_product_id(self, product_id: UUID, _info):
+        return str(product_id)
 
 
 class WishlistItem(WishlistItemConfig):

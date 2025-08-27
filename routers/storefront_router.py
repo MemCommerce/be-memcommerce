@@ -26,7 +26,7 @@ async def get_paginated_storefront(
     limit: int = Query(10, ge=1, le=100, description="Number of items per page"),
     db: AsyncSession = Depends(get_db),
 ):
-    offset = page - 1
+    offset = (page - 1) * limit
     data = await StorefrontManager.select_paginated_storefront_data(limit, offset, db)
     return data
 

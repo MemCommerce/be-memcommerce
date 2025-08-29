@@ -38,7 +38,7 @@ async def post_product_variant(
     product_variant = await ProductVariantManager.insert_product_variant(
         product_variant_data, img_file_name_str, db
     )
-    signed_url = generate_signed_url(product_variant.image_name)
+    signed_url = await generate_signed_url(product_variant.image_name)
     response = ProductVariantResp.from_product_variant(product_variant, signed_url)
     return response
 
@@ -61,7 +61,7 @@ async def post_product_variant_with_temp_image(
     product_variant = await ProductVariantManager.insert_product_variant(
         product_variabt_data, product_variant_req.image_name, db
     )
-    signed_url = generate_signed_url(product_variant.image_name)
+    signed_url = await generate_signed_url(product_variant.image_name)
     response = ProductVariantResp.from_product_variant(product_variant, signed_url)
     return response
 
@@ -72,7 +72,7 @@ async def get_all_pv(db: AsyncSession = Depends(get_db)):
     # TODO optimize generation of signed urls
     pvrs = [
         ProductVariantResp.from_product_variant(
-            pv, generate_signed_url(pv.image_name) if pv.image_name else ""
+            pv, await generate_signed_url(pv.image_name) if pv.image_name else ""
         )
         for pv in product_variants
     ]

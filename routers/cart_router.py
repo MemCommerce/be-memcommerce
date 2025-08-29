@@ -75,7 +75,7 @@ async def post_cart_line_item(
     )
 
     cart_line_item = await CartManager.insert_cart_line_item(cart_line_item_data, db)
-    image_url = generate_signed_url(cart_line_item.image_name)
+    image_url = await generate_signed_url(cart_line_item.image_name)
     response_data = CartLineItemResp(
         id=cart_line_item.id,
         cart_id=cart_line_item.cart_id,
@@ -140,7 +140,7 @@ async def patch_cart_line_item_quantity(
     updated_line_item = await CartManager.update_cart_line_item_quantity(
         line_item_id, quantity, db
     )
-    image_url = generate_signed_url(updated_line_item.image_name)
+    image_url = await generate_signed_url(updated_line_item.image_name)
     response_data = CartLineItemResp(
         id=updated_line_item.id,
         cart_id=updated_line_item.cart_id,

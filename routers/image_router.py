@@ -17,7 +17,7 @@ async def post_temporary_image(image_data: TempImageCreate):
         separate_data_url_from_base64(image_data.base64_data)[1]
     )
     image_file_name_str = upload_bytes_image(image_bytes)
-    signer_url = generate_signed_url(image_file_name_str)
+    signer_url = await generate_signed_url(image_file_name_str)
     temp_image = TempImage(name=image_file_name_str, url=signer_url)
     return temp_image
 
@@ -34,7 +34,7 @@ async def post_bulk_temporary_images(images_datas: list[TempImageCreate]):
             separate_data_url_from_base64(image_data.base64_data)[1]
         )
         image_file_name_str = upload_bytes_image(image_bytes)
-        signer_url = generate_signed_url(image_file_name_str)
+        signer_url = await generate_signed_url(image_file_name_str)
         temp_image = TempImage(name=image_file_name_str, url=signer_url)
         temp_images.append(temp_image)
     return temp_images

@@ -1,6 +1,7 @@
 from uuid import uuid4
 from tempfile import TemporaryDirectory
 from os import getenv
+from asyncio import to_thread
 
 from google.oauth2 import service_account
 from google.cloud.storage import Client
@@ -44,15 +45,15 @@ def upload_bytes_image(
     return file_name
 
 
-def generate_signed_url(file_name, expiration_hours=1):
+async def generate_signed_url(file_name: str, expiration_days: int = 5) -> str:
     try:
+
         bucket = client.bucket(BUCKET_NAME)
         blob = Blob(file_name, bucket)
 
-        expiration_time = datetime.now(UTC) + timedelta(hours=expiration_hours)
-        signed_url = blob.generate_signed_url(
-            version="v4", expiration=expiration_time, method="GET"
-        )
+        expiration_time = datetime.now(UTC) + timedelta(days=expiration_days)
+
+        signed_url = await to_thread(blob.generate_signed_url, version="v4", expiration=expiration_time, method="GET")
 
         return signed_url
     except Exception as e:

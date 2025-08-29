@@ -10,7 +10,7 @@ from schemas.storefront_schemas import (
     SFProductWithReviews,
 )
 from schemas.pagination_schemas import PaginationResponse
-from storage.gcp_storage import generate_signed_url
+from cache.signed_urls import get_signed_urls_as_dict
 
 
 class StorefrontManager:
@@ -62,6 +62,9 @@ class StorefrontManager:
         row = result.mappings().fetchone()
         if row is None:
             raise NoResultFound(f"Product with id {product_id} is not found!")
+        
+        images_names = [variant["image_name"] for variant in row["variants"] if variant["image_name"]]
+        signed_urls = await get_signed_urls_as_dict(images_names)
 
         product = SFProductWithReviews(
             id=str(row["id"]),
@@ -79,7 +82,7 @@ class StorefrontManager:
                     color_id=variant["color_id"],
                     price=variant["price"],
                     image_url=(
-                        generate_signed_url(variant["image_name"])
+                        signed_urls[variant["image_name"]]
                         if variant["image_name"]
                         else ""
                     ),
@@ -124,11 +127,15 @@ class StorefrontManager:
                 ) FROM product_variants pv WHERE pv.product_id = p.id) as variants
             FROM products p
             JOIN categories c ON c.id = p.category_id
+            WHERE EXISTS (SELECT 1 FROM product_variants pv WHERE pv.product_id = p.id)
         """
         )
 
         result = await db.execute(query)
         rows = result.mappings().fetchall()
+
+        images_names = [variant["image_name"] for row in rows for variant in row["variants"] if variant["image_name"]]
+        signed_urls = await get_signed_urls_as_dict(images_names)
 
         products = [
             StorefrontProduct(
@@ -147,7 +154,7 @@ class StorefrontManager:
                         color_id=variant["color_id"],
                         price=variant["price"],
                         image_url=(
-                            generate_signed_url(variant["image_name"])
+                            signed_urls[variant["image_name"]]
                             if variant["image_name"]
                             else ""
                         ),
@@ -196,6 +203,9 @@ class StorefrontManager:
         result = await db.execute(query, {"limit": limit, "offset": offset})
         rows = result.mappings().fetchall()
 
+        images_names = [variant["image_name"] for row in rows for variant in row["variants"] if variant["image_name"]]
+        signed_urls = await get_signed_urls_as_dict(images_names)
+
         products = [
             StorefrontProduct(
                 id=str(row["id"]),
@@ -213,7 +223,7 @@ class StorefrontManager:
                         color_id=variant["color_id"],
                         price=variant["price"],
                         image_url=(
-                            generate_signed_url(variant["image_name"])
+                            signed_urls[variant["image_name"]]
                             if variant["image_name"]
                             else ""
                         ),

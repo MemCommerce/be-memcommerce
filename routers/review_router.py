@@ -45,7 +45,7 @@ async def get_user_reviews(
     response: list[UserReviewResponse] = []
     for review, order_item in items_with_reviews:
         image_url = (
-            generate_signed_url(order_item.image_name)
+            await generate_signed_url(order_item.image_name)
             if order_item.image_name
             else None
         )

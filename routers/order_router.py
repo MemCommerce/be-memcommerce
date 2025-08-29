@@ -94,7 +94,7 @@ async def get_order_info(
                 order_id=item.order_id,
                 product_id=item.product_id,
                 product_variant_id=item.product_variant_id,
-                image_url=generate_signed_url(item.image_name)
+                image_url=await generate_signed_url(item.image_name)
                 if item.image_name
                 else None,
             )
@@ -128,7 +128,7 @@ async def get_user_orders(
                     review=await ReviewManager.select_review_by_order_item_id(
                         str(item.id), db
                     ),
-                    image_url=generate_signed_url(item.image_name)
+                    image_url=await generate_signed_url(item.image_name)
                     if item.image_name
                     else None,
                 )

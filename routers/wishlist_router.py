@@ -29,7 +29,7 @@ async def post_wishlist_item(
     )
 
     wishlist_item = await WishlistManager.insert_wishlist_item(item_data, db)
-    image_url = generate_signed_url(wishlist_item.image_name)
+    image_url = await generate_signed_url(wishlist_item.image_name)
     response_data = WishlistItemResp(
         id=wishlist_item.id,
         user_id=wishlist_item.user_id,

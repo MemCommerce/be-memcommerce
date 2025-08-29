@@ -1,6 +1,7 @@
 from uuid import uuid4
 from tempfile import TemporaryDirectory
 from os import getenv
+from asyncio import to_thread
 
 from google.oauth2 import service_account
 from google.cloud.storage import Client
@@ -9,7 +10,6 @@ from google.cloud.exceptions import NotFound
 from datetime import datetime, timedelta, UTC
 
 from config import BUCKET_NAME, SA_KEY_PATH
-from cache.client import redis_client
 
 
 def get_gcs_client() -> Client:
@@ -45,28 +45,15 @@ def upload_bytes_image(
     return file_name
 
 
-async def generate_signed_url(file_name: str, expiration_days: int = 6) -> str:
+async def generate_signed_url(file_name: str, expiration_days: int = 5) -> str:
     try:
-        cache_key = f"signed_url:{file_name}:{expiration_days}"
-        import time
-        start = time.time()
-        cached_url = await redis_client.get(cache_key)
-        end = time.time()
-
-        print(f"Cache get took {end - start}")
-        if cached_url:
-            return cached_url
 
         bucket = client.bucket(BUCKET_NAME)
         blob = Blob(file_name, bucket)
 
         expiration_time = datetime.now(UTC) + timedelta(days=expiration_days)
-        # TODO make this async somehow
-        signed_url = blob.generate_signed_url(
-            version="v4", expiration=expiration_time, method="GET"
-        )
 
-        await redis_client.set(cache_key, signed_url, ex=expiration_days * 86400)
+        signed_url = await to_thread(blob.generate_signed_url, version="v4", expiration=expiration_time, method="GET")
 
         return signed_url
     except Exception as e:
